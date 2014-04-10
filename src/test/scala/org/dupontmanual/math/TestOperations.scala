@@ -34,21 +34,21 @@ class TestOperations extends FunSuite {
 	val nineOverThree = Quotient(Integer(9), Integer(3))
 	assert(nineOverThree.description === "Quotient(Integer(9), Integer(3))")
 	assert(nineOverThree.toLaTeX === "9\\div3")
-	// FAIL: assert(nineOverThree.simplify === Integer(3))
+	assert(nineOverThree.simplify === Integer(3))
   }
 	
   test("differences") {
 	val negEightMinusNegTwelve = Difference(Integer(-8), Integer(-12))
 	assert(negEightMinusNegTwelve.description === "Difference(Integer(-8), Integer(-12))")
 	assert(negEightMinusNegTwelve.toLaTeX === "-8-(-12)")
-	// FAIL: assert(negEightMinusNegTwelve.simplify === Integer(4))
+    assert(negEightMinusNegTwelve.simplify === Integer(4))
   }
   
   test("sums") {
 	val fourTimesSixPlusSevenTimesTwo = Sum(Product(Integer(4), Integer(6)), Product(Integer(7), Integer(2)))
 	assert(fourTimesSixPlusSevenTimesTwo.description === "Sum(Product(Integer(4), Integer(6)), Product(Integer(7), Integer(2)))")
 	assert(fourTimesSixPlusSevenTimesTwo.toLaTeX === "4\\cdot6+7\\cdot2")
-	// FAIL: assert(fourTimesSixPlusSevenTimesTwo.simplify.description === Integer(38))
+	assert(fourTimesSixPlusSevenTimesTwo.simplify === Integer(38))
   }
 
   test("roots") {

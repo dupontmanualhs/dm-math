@@ -103,14 +103,16 @@ class TestParser extends FunSuite {
   }
   
   test("equivalence") {
-    //some of these are failing
+    // most of these are failing
+    // almost every error in TestParser and TestOperations occur when there is an implicit multiplication such
+    // with a constant and a variable or a constant and a function, such as an expression in parenthesis or sqrt(x)
     // FAIL: assert(Parser("1+2").equals(Parser("2+1")) === true)
     // FAIL: assert(Parser("2*a").equals(Parser("a*2")) === true)
-    assert(Parser("a+a").equals(Parser("2*a")) === false)
-    // ERROR: assert(Parser("a+a").equals(Parser("2a")) === false)
-    assert(Parser("2+1").equals(Parser("3")) === false)
-    // assert(Parser("(x+2)/5").equals(Parser("1/5*(x+2)")) === true)
-    // ERROR: assert(Parser("2(x+3)").equals(Parser("2x+6")) === false)
+    // FAIL: assert(Parser("a+a").equals(Parser("2*a")) === true)
+    // ERROR: assert(Parser("a+a").equals(Parser("2a")) === true)
+    // FAIL: assert(Parser("2+1").equals(Parser("3")) === true)
+    // FAIL: assert(Parser("(x+2)/5").equals(Parser("1/5*(x+2)")) === true)
+    // ERROR: assert(Parser("2(x+3)").equals(Parser("2x+6")) === true)
     // ERROR: assert(Parser("2ab").equals(Parser("b2a")) === true)
     assert(Parser(".25").equals(Parser("1/4")) === true)
     // ERROR: assert(Parser("a^2+2ab+b^2").equals(Parser("ba2+a^2+b^2")) === true)
@@ -118,17 +120,17 @@ class TestParser extends FunSuite {
     // ERROR: assert(Parser("5a").equals(Parser("a*5")) === true)
     // ERROR: assert(Parser("5sqrt(3)").equals(Parser("sqrt(3)5")) === true)
     // ERROR: assert(Parser("5sqrt(3)").equals(Parser("5*sqrt(3)")) === true)
-    // ERROR: assert(Parser("5sqrt(3)").equals(Parser("sqrt(75)")) === false)
+    // ERROR: assert(Parser("5sqrt(3)").equals(Parser("sqrt(75)")) === true)
     assert(Parser("a^2").equals(Parser("a^(2)")) === true)
     // FAIL: assert(Parser("a-b").equals(Parser("a+-b")) === true)
     assert(Parser("a^b^c").equals(Parser("a^(b^c)")) === true)
     assert(Parser("a^-1").equals(Parser("a^(-1)")) === true)
-    assert(Parser("a^-1").equals(Parser("1/(a^1)")) === false)
+    // FAIL: assert(Parser("a^-1").equals(Parser("1/(a^1)")) === true)
     assert(Parser("1/4(x+3)").equals(Parser("(1/4)(x+3)")) === true)
     assert(Parser("(a)(b)").equals(Parser("(a)*(b)")) === true)
-    // ERROR: assert(Parser("(a)(b)").equals(Parser("ab")) === false)
-    assert(Parser("a^2 * a^2").equals(Parser("a^4")) === false)
-    assert(Parser("(a^3)/(a^2)").equals(Parser("a")) === false)
+    // ERROR: assert(Parser("(a)(b)").equals(Parser("ab")) === true)
+    // FAIL: assert(Parser("a^2 * a^2").equals(Parser("a^4")) === true)
+    // FAIL: assert(Parser("(a^3)/(a^2)").equals(Parser("a")) === true)
     // ERROR: assert(Parser("a^(-1)").equals(Parser("1/a")) === true)
   }
 }

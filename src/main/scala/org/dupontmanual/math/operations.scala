@@ -54,7 +54,7 @@ abstract class Operation(expressions: List[Expression]) extends Expression {
     }
 
     def operationSimplifyExpressions(expressions: List[Expression]): List[Expression] = {
-        expressions.size match{
+        expressions.size match {
             case 0 => Nil
             case 1 => getSimplifiedExpressions(expressions)
             case _ => binarySimplifyExpressions(expressions)
@@ -149,14 +149,14 @@ class Sum(expressions: List[Expression]) extends Operation(expressions) {
     override def getPrecedence: Int = 0
     override def simplify: Expression = {
       val simplifiedExpressions = this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions))
-      simplifiedExpressions.size match{
+      simplifiedExpressions.size match {
         case 0 => Integer(0)
         case 1 => simplifiedExpressions.head
         case _ => Sum(simplifiedExpressions)
       }
     }
     override def binarySimplify(left: Expression, right: Expression): Option[Expression] = {                          //TODO: decide how to simplify decimals with fractions
-        (left, right) match{
+        (left, right) match {
             case (left: Constant, right: Constant) => Some(left + right)
             case _ => None
         }
@@ -175,9 +175,22 @@ class Difference(expressions: List[Expression]) extends Operation(expressions) {
     override def getOperator: String = "-"
     override def getClassName: String = "Difference"
     override def getPrecedence: Int = 1
-    override def simplify = Difference(this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions)))
+    override def simplify: Expression = {
+      val simplifiedExpressions = this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions))
+      simplifiedExpressions.size match {
+        case 0 => Integer(0)
+        case 1 => simplifiedExpressions.head
+        case _ => Sum(simplifiedExpressions)
+      }
+    }
+    override def binarySimplify(left: Expression, right: Expression): Option[Expression] = {                          //TODO: decide how to simplify decimals with fractions
+        (left, right) match {
+            case (left: Constant, right: Constant) => Some(left - right)
+            case _ => None
+        }
+    }
     override def evaluate(variables: HashMap[Expression, Value]): Expression = {
-      this
+      Difference(this.expressions.map(n => Expression.checkVar(n, variables))).simplify
     }
 }
 object Difference {
@@ -189,9 +202,22 @@ class Product(expressions: List[Expression]) extends Operation(expressions) {
     override def getOperator: String = "\\cdot"
     override def getClassName: String = "Product"
     override def getPrecedence: Int = 2
-    override def simplify = Product(this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions)))
+    override def simplify: Expression = {
+      val simplifiedExpressions = this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions))
+      simplifiedExpressions.size match {
+        case 0 => Integer(0)
+        case 1 => simplifiedExpressions.head
+        case _ => Sum(simplifiedExpressions)
+      }
+    }
+    override def binarySimplify(left: Expression, right: Expression): Option[Expression] = {                          //TODO: decide how to simplify decimals with fractions
+        (left, right) match {
+            case (left: Constant, right: Constant) => Some(left * right)
+            case _ => None
+        }
+    }
     override def evaluate(variables: HashMap[Expression, Value]): Expression = {
-      this
+      Product(this.expressions.map(n => Expression.checkVar(n, variables))).simplify
     }
 }
 object Product {
@@ -203,9 +229,22 @@ class Quotient(expressions: List[Expression]) extends Operation(expressions) {
     override def getOperator: String = "\\div"
     override def getClassName: String = "Quotient"
     override def getPrecedence: Int = 2
-    override def simplify = Quotient(this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions)))
+    override def simplify: Expression = {
+      val simplifiedExpressions = this.operationSimplifyExpressions(getSimplifiedExpressions(getExpressions))
+      simplifiedExpressions.size match {
+        case 0 => Integer(0)
+        case 1 => simplifiedExpressions.head
+        case _ => Sum(simplifiedExpressions)
+      }
+    }
+    override def binarySimplify(left: Expression, right: Expression): Option[Expression] = {                          //TODO: decide how to simplify decimals with fractions
+        (left, right) match {
+            case (left: Constant, right: Constant) => Some(left / right)
+            case _ => None
+        }
+    }
     override def evaluate(variables: HashMap[Expression, Value]): Expression = {
-      this
+      Quotient(this.expressions.map(n => Expression.checkVar(n, variables))).simplify
     }
 }
 object Quotient {
